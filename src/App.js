@@ -1,25 +1,41 @@
-import logo from './logo.svg';
-import './App.css';
+import React from "react";
+import Filter from "./Filter";
+import Navbar from "./Navbar";
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+class App extends React.Component {
+  state = {
+    movies: [],
+    genre: [],
+  };
+
+  componentDidMount() {
+    let f = async () => {
+      let responseGenre = await fetch("/genre");
+      let responseMovies = await fetch("/movies");
+      let moviesJson = await responseMovies.json();
+      let genreJson = await responseGenre.json();
+
+      this.setState({
+        movies: moviesJson,
+        genre: genreJson,
+      });
+    };
+
+    f();
+  }
+
+  render() {
+    return (
+      <div>
+        <Navbar />
+        
+
+        <div className="row">
+          <Filter genreData = {this.state.genre}/>
+        </div>
+      </div>
+    );
+  }
 }
 
 export default App;
