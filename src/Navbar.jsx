@@ -3,7 +3,7 @@ let Navbar = () => {
         <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container-fluid">
           <a class="navbar-brand" href="#">
-            MoviesRentals
+            Movies On Rent
           </a>
           <button
             class="navbar-toggler"
