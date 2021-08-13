@@ -1,21 +1,42 @@
 import Pagination from "./Pagination";
+import React from "react";
 import "./Table.css";
 
-let Table = (props) => {
+class Table extends React.Component{
+  state ={
+        currPage : 1,
+  };
 
+  selectPage = (value) =>
+  {
+    this.setState({currPage:value});
+  }
 
-  let allMovies = props.moviesData;
-  let currFilter = props.selectedFilter;
+   render(){
+      let allMovies = this.props.moviesData;
+      let currFilter = this.props.selectedFilter;
 
-  let filteredMoviesArr = allMovies.filter((el) => {
+   let filteredMoviesArr = allMovies.filter((el) => {
     if (currFilter == "All Genre") {
-      return el;
+      return true;
     } else if (el.genre.name == currFilter) {
-      return el;
+      return true;
     }
   });
 
-  let arrToBeUsedInTable = filteredMoviesArr.slice(0, 4);
+  filteredMoviesArr = filteredMoviesArr.filter((el) => {
+    let movieTitle = el.title;
+    movieTitle = movieTitle.toLowerCase();
+    let s = this.props.search.toLowerCase();
+    return movieTitle.includes(s);
+  });
+
+
+  let numberOfPages = Math.ceil(filteredMoviesArr.length/4);
+  let startIndex = (this.state.currPage - 1) * 4;
+    let endIndex = Math.min(filteredMoviesArr.length, this.state.currPage * 4);
+
+    let arrToBeUsedInTable = filteredMoviesArr.slice(startIndex, endIndex);
 
   return (
     <>
@@ -43,7 +64,7 @@ let Table = (props) => {
                  
                     <td
                           onClick={() => {
-                            props.toggleLike(el._id);
+                            this. props.toggleLike(el._id);
                           }}
                         >
                          {el.liked ? (
@@ -56,7 +77,14 @@ let Table = (props) => {
                     </td>
                     <td>
                     
-                      <button className="table-delete-btn">Delete</button>
+                    <button
+                          onClick={() => {
+                            this.props.deleteMovie(el._id);
+                          }}
+                          className="table-delete-btn"
+                        >
+                          Delete
+                        </button>
                     </td>
                   </tr>
                 );
@@ -65,9 +93,12 @@ let Table = (props) => {
           </table>
         </div>
       </div>
-      <Pagination />
+      <Pagination
+       selectPage={this.selectPage}
+       currPage={this.state.currPage}
+       numberOfPages={numberOfPages} />
     </>
   );
 };
-
+}
 export default Table;
